@@ -1,23 +1,32 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Reservations from './pages/Reservations';
-import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Reservations from "./pages/Reservations";
+import Orders from "./pages/Orders";
+import Inventory from "./pages/Inventory";
+import Staff from "./pages/Staff";
 import Login from "./pages/Login";
-import RequireAuth from "./components/RequireAuth";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Navbar />
-      <div className="p-4">
-        <Routes>
-          <Route path="/" element={<Reservations />} />
-          <Route path="/login" element={<Login />} />
-
-          <Route path="/reservations" element={<RequireAuth><Reservations /></RequireAuth>} />
-          <Route path="/orders" element={<RequireAuth><Orders /></RequireAuth>} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        
+        <Route path="/" element={
+          <ProtectedRoute><Reservations /></ProtectedRoute>
+        } />
+        <Route path="/orders" element={
+          <ProtectedRoute><Orders /></ProtectedRoute>
+        } />
+        <Route path="/inventory" element={
+          <ProtectedRoute><Inventory /></ProtectedRoute>
+        } />
+        <Route path="/staff" element={
+          <ProtectedRoute><Staff /></ProtectedRoute>
+        } />
+      </Routes>
     </Router>
   );
 }
