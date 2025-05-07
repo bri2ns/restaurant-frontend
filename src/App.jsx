@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Reservations from './pages/Reservations';
 import Navbar from './components/Navbar';
 import Login from "./pages/Login";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Reservations />} />
           <Route path="/login" element={<Login />} />
+
+          <Route path="/reservations" element={<RequireAuth><Reservations /></RequireAuth>} />
+          <Route path="/orders" element={<RequireAuth><Orders /></RequireAuth>} />
         </Routes>
       </div>
     </Router>
