@@ -52,7 +52,7 @@ export default function Login() {
           value={username}
           onChange={(e) => {
             setUsername(e.target.value);
-            console.log("📝 Username changed:", e.target.value);
+            console.log("Username changed:", e.target.value);
           }}
           className="w-full p-2 border rounded"
           required
