@@ -9,6 +9,7 @@ export default function Reservations() {
     const fetchReservations = async () => {
       try {
         const res = await api.get("/reservations");
+        console.log("Reservation data:", res.data);
         setReservations(res.data);
       } catch (err) {
         console.error("Failed to load reservations:", err);
@@ -42,8 +43,12 @@ export default function Reservations() {
               <td className="p-2">{res.id}</td>
               <td className="p-2">{res.customer_name}</td>
               <td className="p-2">{res.table_number}</td>
-              <td className="p-2">{new Date(res.datetime).toLocaleString()}</td>
-              <td className="p-2">{res.num_guests}</td>
+              <td className="p-2">
+                {res.date_time
+                  ? new Date(res.date_time).toLocaleString()
+                  : "Invalid Date"}
+              </td>
+              <td className="p-2">{res.guests_number}</td>
               <td className="p-2">{res.status}</td>
             </tr>
           ))}

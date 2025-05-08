@@ -6,6 +6,7 @@ import Inventory from "./pages/Inventory";
 import Staff from "./pages/Staff";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ManagerDashboard from "./pages/ManagerDashboard";
 
 function App() {
   return (
@@ -13,19 +14,11 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
-        
-        <Route path="/" element={
-          <ProtectedRoute><Reservations /></ProtectedRoute>
-        } />
-        <Route path="/orders" element={
-          <ProtectedRoute><Orders /></ProtectedRoute>
-        } />
-        <Route path="/inventory" element={
-          <ProtectedRoute><Inventory /></ProtectedRoute>
-        } />
-        <Route path="/staff" element={
-          <ProtectedRoute><Staff /></ProtectedRoute>
-        } />
+        <Route path="/" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
+        <Route path="/staff" element={<ProtectedRoute><Staff /></ProtectedRoute>} />
+        <Route path="/manager" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
