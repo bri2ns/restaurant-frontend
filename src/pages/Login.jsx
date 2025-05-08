@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -21,8 +22,8 @@ export default function Login() {
       formData.append("username", username);
       formData.append("password", password);
 
-      console.log("📤 Sending request to /auth/login...");
-      console.log("🧪 Payload being sent:", formData.toString());
+      console.log("Sending request to /auth/login...");
+      console.log("Payload being sent:", formData.toString());
       const response = await api.post("/auth/login", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -33,11 +34,22 @@ export default function Login() {
 
       const token = response.data.access_token || response.data;
       localStorage.setItem("token", token);
-
       console.log("📦 Token saved to localStorage:", token);
-      navigate("/");
+
+      const decoded = jwtDecode(token);
+      console.log("🧬 Decoded token:", decoded);
+
+      // Redirect based on role
+      switch (decoded.role) {
+        case "manager":
+          navigate("/manager");
+          break;
+        // Add other roles here if needed
+        default:
+          navigate("/");
+      }
     } catch (err) {
-      console.error("❌ Login failed:", err.response?.data || err.message);
+      console.error("[FAIL] Login failed:", err.response?.data || err.message);
       setError("Invalid credentials");
     }
   };
