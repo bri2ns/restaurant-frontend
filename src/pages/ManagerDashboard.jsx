@@ -39,18 +39,6 @@ export default function ManagerDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white p-6 border-r flex flex-col">
-        <div className="text-center font-bold text-xl border p-2 mb-8">LOGO</div>
-        <nav className="space-y-2">
-          <button className="w-full text-left p-2 bg-gray-200 rounded">Overview</button>
-          <button onClick={() => navigate("/staff-management")} className="w-full text-left p-2 hover:bg-gray-100 rounded">Manage Staff</button>
-          <button onClick={() => navigate("/menu")} className="w-full text-left p-2 hover:bg-gray-100 rounded">View Menu Items</button>
-          <button onClick={() => navigate("/inventory")} className="w-full text-left p-2 hover:bg-gray-100 rounded">Manage Inventory</button>
-          <button onClick={() => navigate("/reservations")} className="w-full text-left p-2 hover:bg-gray-100 rounded">Reservations</button>
-        </nav>
-      </aside>
-      
       {/* Main Content */}
       <main className="flex-1 p-8 space-y-8">
         <h1 className="text-3xl font-bold mb-6">Manager Dashboard</h1>

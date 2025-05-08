@@ -18,7 +18,7 @@ export default function StaffScheduleSection() {
 
   useEffect(() => {
     fetchSchedules();
-    fetchStaffMembers(); // Fetch staff list when the component loads
+    fetchStaffMembers();
   }, []);
 
   const fetchSchedules = async () => {
@@ -32,7 +32,7 @@ export default function StaffScheduleSection() {
 
   const fetchStaffMembers = async () => {
     try {
-      const res = await api.get("/users"); // Assuming there's a /users endpoint
+      const res = await api.get("/staff/members"); // ✅ Fixed
       setStaffMembers(res.data);
     } catch (err) {
       console.error("Failed to fetch staff members:", err);
@@ -42,17 +42,26 @@ export default function StaffScheduleSection() {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
+      const selectedUser = staffMembers.find(
+        (member) => member.id.toString() === newEntry.user_id.toString()
+      );
+  
+      if (!selectedUser) throw new Error("User not found in staff list");
+  
       await api.post("/staff", {
         ...newEntry,
+        position: selectedUser.role, // Inject the required position
         shift_start: new Date(newEntry.shift_start).toISOString(),
         shift_end: new Date(newEntry.shift_end).toISOString(),
       });
+  
       setNewEntry({ user_id: "", shift_start: "", shift_end: "" });
       fetchSchedules();
     } catch (err) {
       console.error("Failed to add schedule:", err);
     }
   };
+  
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this schedule?")) return;
@@ -67,7 +76,7 @@ export default function StaffScheduleSection() {
   const startEdit = (entry) => {
     setEditingId(entry.id);
     setEditValues({
-      user_id: entry.user_id,
+      user_id: entry.user.id,
       shift_start: entry.shift_start,
       shift_end: entry.shift_end,
     });
@@ -97,14 +106,16 @@ export default function StaffScheduleSection() {
         <div className="flex gap-2">
           <select
             value={newEntry.user_id}
-            onChange={(e) => setNewEntry({ ...newEntry, user_id: e.target.value })}
+            onChange={(e) =>
+              setNewEntry({ ...newEntry, user_id: e.target.value })
+            }
             className="border p-2 rounded w-1/3"
             required
           >
             <option value="">Select Staff Member</option>
             {staffMembers.map((staff) => (
               <option key={staff.id} value={staff.id}>
-                {staff.username}
+                {staff.username} ({staff.role})
               </option>
             ))}
           </select>
@@ -157,12 +168,12 @@ export default function StaffScheduleSection() {
                   >
                     {staffMembers.map((staff) => (
                       <option key={staff.id} value={staff.id}>
-                        {staff.username}
+                        {staff.username} ({staff.role})
                       </option>
                     ))}
                   </select>
                 ) : (
-                  s.name
+                  `${s.user?.username || "Unknown"} (${s.position})`
                 )}
               </td>
               <td className="p-2">

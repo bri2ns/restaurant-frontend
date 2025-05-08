@@ -1,14 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Reservations from "./pages/Reservations";
 import Orders from "./pages/Orders";
-import Inventory from "./pages/Inventory";
+import Inventory from "./pages/InventoryPage";
 import Staff from "./pages/Staff";
 import Login from "./pages/Login";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import StaffManagement from "./pages/StaffManagement";
-import ProtectedRoute from "./components/ProtectedRoute";
 import MenuItems from "./pages/MenuItems";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ManagerLayout from "./components/ManagerLayout";
+import Navbar from "./components/Navbar";
 
 function App() {
   const showNavbar = !window.location.pathname.startsWith("/login");
@@ -18,13 +19,19 @@ function App() {
       {showNavbar && <Navbar />}
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
+
+        {/* Routes without sidebar */}
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-        <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
         <Route path="/staff" element={<ProtectedRoute><Staff /></ProtectedRoute>} />
-        <Route path="/manager" element={<ProtectedRoute role="manager"><ManagerDashboard /></ProtectedRoute>} />
-        <Route path="/staff-management" element={<ProtectedRoute role="manager"><StaffManagement /></ProtectedRoute>} />
-        <Route path="/menu" element={<ProtectedRoute><MenuItems /></ProtectedRoute>} />
+
+        {/* Manager section with persistent sidebar */}
+        <Route path="/" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
+          <Route path="manager" element={<ManagerDashboard />} />
+          <Route path="staff-management" element={<StaffManagement />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="reservations" element={<Reservations />} />
+          <Route path="menu" element={<MenuItems />} />
+        </Route>
       </Routes>
     </Router>
   );
