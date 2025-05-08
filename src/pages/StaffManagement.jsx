@@ -3,11 +3,20 @@ import api from "../api";
 
 export default function StaffManagement() {
   const [staff, setStaff] = useState([]);
-  const [newStaff, setNewStaff] = useState({ name: "", position: "" });
-  const [editing, setEditing] = useState(null); // ID of the staff being edited
-  const [editValues, setEditValues] = useState({ name: "", position: "" });
+  const [newStaff, setNewStaff] = useState({
+    name: "",
+    position: "",
+    shift_times: "",
+    hours_worked: 0,
+  });
+  const [editing, setEditing] = useState(null);
+  const [editValues, setEditValues] = useState({
+    name: "",
+    position: "",
+    shift_times: "",
+    hours_worked: 0,
+  });
 
-  // Fetch staff on load
   useEffect(() => {
     fetchStaff();
   }, []);
@@ -25,7 +34,7 @@ export default function StaffManagement() {
     e.preventDefault();
     try {
       await api.post("/staff", newStaff);
-      setNewStaff({ name: "", position: "" });
+      setNewStaff({ name: "", position: "", shift_times: "", hours_worked: 0 });
       fetchStaff();
     } catch (err) {
       console.error("Add failed:", err);
@@ -43,7 +52,12 @@ export default function StaffManagement() {
 
   const startEditing = (staffMember) => {
     setEditing(staffMember.id);
-    setEditValues({ name: staffMember.name, position: staffMember.position });
+    setEditValues({
+      name: staffMember.name,
+      position: staffMember.position,
+      shift_times: staffMember.shift_times,
+      hours_worked: staffMember.hours_worked,
+    });
   };
 
   const handleEditSave = async (id) => {
@@ -62,13 +76,13 @@ export default function StaffManagement() {
 
       {/* Add Staff Form */}
       <form onSubmit={handleAdd} className="mb-8 space-y-4">
-        <div className="flex gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <input
             type="text"
             placeholder="Name"
             value={newStaff.name}
             onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
-            className="border p-2 rounded w-1/2"
+            className="border p-2 rounded"
             required
           />
           <input
@@ -78,8 +92,26 @@ export default function StaffManagement() {
             onChange={(e) =>
               setNewStaff({ ...newStaff, position: e.target.value })
             }
-            className="border p-2 rounded w-1/2"
+            className="border p-2 rounded"
             required
+          />
+          <input
+            type="text"
+            placeholder="Shift Times"
+            value={newStaff.shift_times}
+            onChange={(e) =>
+              setNewStaff({ ...newStaff, shift_times: e.target.value })
+            }
+            className="border p-2 rounded"
+          />
+          <input
+            type="number"
+            placeholder="Hours Worked"
+            value={newStaff.hours_worked}
+            onChange={(e) =>
+              setNewStaff({ ...newStaff, hours_worked: parseInt(e.target.value) })
+            }
+            className="border p-2 rounded"
           />
         </div>
         <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -94,6 +126,8 @@ export default function StaffManagement() {
             <th className="p-2">ID</th>
             <th className="p-2">Name</th>
             <th className="p-2">Position</th>
+            <th className="p-2">Shift</th>
+            <th className="p-2">Hours Worked</th>
             <th className="p-2">Actions</th>
           </tr>
         </thead>
@@ -125,6 +159,36 @@ export default function StaffManagement() {
                   />
                 ) : (
                   s.position
+                )}
+              </td>
+              <td className="p-2">
+                {editing === s.id ? (
+                  <input
+                    value={editValues.shift_times}
+                    onChange={(e) =>
+                      setEditValues({ ...editValues, shift_times: e.target.value })
+                    }
+                    className="border p-1 rounded"
+                  />
+                ) : (
+                  s.shift_times
+                )}
+              </td>
+              <td className="p-2">
+                {editing === s.id ? (
+                  <input
+                    type="number"
+                    value={editValues.hours_worked}
+                    onChange={(e) =>
+                      setEditValues({
+                        ...editValues,
+                        hours_worked: parseInt(e.target.value),
+                      })
+                    }
+                    className="border p-1 rounded"
+                  />
+                ) : (
+                  s.hours_worked
                 )}
               </td>
               <td className="p-2 space-x-2">
