@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
+import StaffScheduleSection from "../components/StaffScheduleSection";
 
 export default function ManagerDashboard() {
   const [reservations, setReservations] = useState([]);
@@ -76,7 +77,7 @@ export default function ManagerDashboard() {
         {/* Staff Schedule */}
         <section className="bg-white p-6 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Staff Schedule</h2>
-          <p className="text-gray-600">(Placeholder for schedule or upcoming shifts)</p>
+          <StaffScheduleSection/>
         </section>
 
         {/* Menu Items */}

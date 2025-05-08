@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import StaffManagement from "./pages/StaffManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MenuItems from "./pages/MenuItems";
 
 function App() {
   const showNavbar = !window.location.pathname.startsWith("/login");
@@ -23,6 +24,7 @@ function App() {
         <Route path="/staff" element={<ProtectedRoute><Staff /></ProtectedRoute>} />
         <Route path="/manager" element={<ProtectedRoute role="manager"><ManagerDashboard /></ProtectedRoute>} />
         <Route path="/staff-management" element={<ProtectedRoute role="manager"><StaffManagement /></ProtectedRoute>} />
+        <Route path="/menu" element={<ProtectedRoute><MenuItems /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
