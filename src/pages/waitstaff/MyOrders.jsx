@@ -9,7 +9,7 @@ export default function MyOrders() {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await api.get("/orders/my-orders", {
+        const res = await api.get("/orders", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -50,15 +50,19 @@ export default function MyOrders() {
                 <td className="p-2">Table {order.table_number}</td>
                 <td className="p-2">
                   <ul className="list-disc pl-4">
-                    {order.items.map((item, index) => (
+                    {order.items_ordered.map((item, index) => (
                       <li key={index}>
-                        {item.name} x {item.quantity}
-                        {item.special_request && ` (${item.special_request})`}
+                        {item} x {order.quantities[index]}
                       </li>
                     ))}
+                    {order.special_requests && (
+                      <li className="italic text-gray-500">
+                        Note: {order.special_requests}
+                      </li>
+                    )}
                   </ul>
                 </td>
-                <td className="p-2 capitalize text-blue-600">{order.status || "pending"}</td>
+                <td className="p-2 capitalize text-blue-600">{order.status}</td>
               </tr>
             ))}
           </tbody>
