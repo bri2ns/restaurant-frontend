@@ -1,26 +1,29 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import Reservations from "./pages/manager/Reservations";
-import Orders from "./pages/manager/Orders";
-import Inventory from "./pages/manager/InventoryPage";
-import Staff from "./pages/manager/Staff";
-import Login from "./pages/shared/Login";
-import ManagerDashboard from "./pages/manager/ManagerDashboard";
-import StaffManagement from "./pages/manager/StaffManagement";
-import MenuItems from "./pages/manager/MenuItems";
-import CreateStaff from "./pages/manager/CreateStaff";
-import InventoryReport from "./pages/manager/InventoryReport";
 import ProtectedRoute from "./components/ProtectedRoute";
-import ManagerLayout from "./components/ManagerLayout";
 import Navbar from "./components/Navbar";
 
 // ✅ Shared staff pages
 import MySchedule from "./pages/shared/MySchedule";
 import RequestShiftChange from "./pages/shared/RequestShiftChange";
+import Login from "./pages/shared/Login";
+
+// Manager staff only pages
+import Reservations from "./pages/manager/Reservations";
+import Orders from "./pages/manager/Orders";
+import Inventory from "./pages/manager/InventoryPage";
+import Staff from "./pages/manager/Staff";
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import StaffManagement from "./pages/manager/StaffManagement";
+import MenuItems from "./pages/manager/MenuItems";
+import CreateStaff from "./pages/manager/CreateStaff";
+import InventoryReport from "./pages/manager/InventoryReport";
+import ManagerLayout from "./components/ManagerLayout";
 
 // ✅ Waitstaff-only pages
 import WaitstaffLayout from "./pages/waitstaff/WaitstaffLayout";
 import CreateOrder from "./pages/waitstaff/CreateOrder";
 import MyOrders from "./pages/waitstaff/MyOrders";
+import WaitstaffReservations from "./pages/waitstaff/WaitstaffReservations";
 
 function AppWrapper() {
   const location = useLocation();
@@ -54,6 +57,7 @@ function AppWrapper() {
           <Route path="my-orders" element={<MyOrders />} />
           <Route path="schedule" element={<MySchedule />} />
           <Route path="request-shift-change" element={<RequestShiftChange />} />
+          <Route path="reservations" element={<WaitstaffReservations />} />
         </Route>
 
         {/* You can add kitchen routes here in the future */}
