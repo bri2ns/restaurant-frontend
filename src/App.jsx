@@ -25,6 +25,16 @@ import CreateOrder from "./pages/waitstaff/CreateOrder";
 import MyOrders from "./pages/waitstaff/MyOrders";
 import WaitstaffReservations from "./pages/waitstaff/WaitstaffReservations";
 
+// Kitchen staff only pages
+import KitchenLayout from './pages/kitchen/KitchenLayout';
+import KitchenDashboard from './pages/kitchen/KitchenDashboard';
+import KitchenHistory from './pages/kitchen/KitchenHistory';
+
+// Inventory staff only pages
+import InventoryLayout from "./pages/inventory/InventoryLayout";
+import InventoryDashboard from "./pages/inventory/InventoryDashboard";
+
+
 function AppWrapper() {
   const location = useLocation();
   const showNavbar = !location.pathname.startsWith("/login");
@@ -60,7 +70,16 @@ function AppWrapper() {
           <Route path="reservations" element={<WaitstaffReservations />} />
         </Route>
 
-        {/* You can add kitchen routes here in the future */}
+        {/* Kitchen staff only routes */}
+        <Route path="/kitchen" element={<ProtectedRoute role="kitchen"><KitchenLayout /></ProtectedRoute>}>
+        <Route index element={<KitchenDashboard />} />
+        <Route path="history" element={<KitchenHistory />} />
+        </Route>
+
+        {/* Inventory staff only routes */}
+        <Route path="/inventory" element={<ProtectedRoute role="inventory"><InventoryLayout /></ProtectedRoute>}>
+        <Route index element={<InventoryDashboard />} />
+        </Route>
       </Routes>
     </>
   );

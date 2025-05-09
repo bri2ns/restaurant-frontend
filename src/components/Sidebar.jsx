@@ -35,7 +35,25 @@ export default function Sidebar() {
     { label: "Reservations", path: "/waitstaff/reservations" },
   ];
 
-  const navItems = role === "manager" ? managerItems : role === "waitstaff" ? waitstaffItems : [];
+  const kitchenItems = [
+    { label: "Active Orders", path: "/kitchen" },
+    { label: "History", path: "/kitchen/history" },
+  ];
+
+  const inventoryItems = [
+    { label: "Inventory Dashboard", path: "/inventory" },
+  ];
+
+  const navItems =
+    role === "manager"
+      ? managerItems
+      : role === "waitstaff"
+      ? waitstaffItems
+      : role === "kitchen"
+      ? kitchenItems
+      : role === "inventory"
+      ? inventoryItems
+      : [];
 
   return (
     <aside className="w-64 bg-white border-r p-4 flex flex-col">

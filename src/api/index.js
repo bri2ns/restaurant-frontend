@@ -25,4 +25,16 @@ api.interceptors.response.use(
   }
 );
 
+export async function getActiveOrders() {
+  const res = await api.get("/orders/active");
+  return res.data;
+}
+
+export async function updateOrderStatus(orderId, newStatus) {
+  const res = await api.patch(`/orders/${orderId}/status`, {
+    new_status: newStatus,
+  });
+  return res.data;
+}
+
 export default api;
