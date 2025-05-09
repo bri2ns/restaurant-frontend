@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
 import StaffScheduleSection from "../components/StaffScheduleSection";
+import MenuItemList from "../components/MenuItemList";
+
 
 export default function ManagerDashboard() {
   const [reservations, setReservations] = useState([]);
@@ -71,7 +73,7 @@ export default function ManagerDashboard() {
         {/* Menu Items */}
         <section className="border p-6 rounded shadow bg-white">
           <h2 className="text-xl font-semibold mb-4">Menu Items</h2>
-          <p className="text-gray-600">(Placeholder for menu item summary or list)</p>
+          <MenuItemList />
         </section>
       </main>
     </div>

@@ -6,12 +6,15 @@ export default function Sidebar() {
   const location = useLocation();
 
   const navItems = [
-    { label: "Overview", path: "/manager" },
-    { label: "Manage Staff", path: "/staff-management" },
-    { label: "View Menu Items", path: "/menu" },
-    { label: "Manage Inventory", path: "/inventory" },
-    { label: "Reservations", path: "/reservations" },
-  ];
+  { label: "Overview", path: "/manager" },
+  { label: "Manage Staff", path: "/staff-management" },
+  { label: "Create Staff", path: "/create-staff" },
+  { label: "View Menu Items", path: "/menu" },
+  { label: "Manage Inventory", path: "/inventory" },
+  { label: "Inventory Report", path: "/manager/inventory-report" },
+  { label: "Reservations", path: "/reservations" },
+];
+
 
   return (
     <aside className="w-64 bg-white border-r p-4 flex flex-col">

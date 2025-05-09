@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import api from "../api";
 
@@ -8,6 +7,7 @@ export default function InventoryPage() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [reorderQuantities, setReorderQuantities] = useState({});
 
   useEffect(() => {
     fetchInventory();
@@ -71,7 +71,9 @@ export default function InventoryPage() {
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>
-              {cat === "all" ? "All Categories" : cat.charAt(0).toUpperCase() + cat.slice(1)}
+              {cat === "all"
+                ? "All Categories"
+                : cat.charAt(0).toUpperCase() + cat.slice(1)}
             </option>
           ))}
         </select>
@@ -86,6 +88,7 @@ export default function InventoryPage() {
             <th className="p-2">Reorder Level</th>
             <th className="p-2">Supplier</th>
             <th className="p-2">Status</th>
+            <th className="p-2">Reorder</th>
           </tr>
         </thead>
         <tbody>
@@ -102,6 +105,52 @@ export default function InventoryPage() {
                 ) : (
                   <span className="text-green-600">OK</span>
                 )}
+              </td>
+              <td className="p-2">
+                <div className="flex gap-2 items-center flex-wrap">
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Qty"
+                    className="w-16 border rounded px-1 py-0.5 text-sm"
+                    value={reorderQuantities[item.id] || ""}
+                    onChange={(e) =>
+                      setReorderQuantities({
+                        ...reorderQuantities,
+                        [item.id]: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    onClick={async () => {
+                      const qty = parseInt(reorderQuantities[item.id] || 0);
+                      if (!qty || qty < 1) {
+                        alert("Enter a valid reorder quantity.");
+                        return;
+                      }
+
+                      try {
+                        await api.patch(
+                          `/inventory/${item.id}/reorder`,
+                          qty,
+                          {
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                          }
+                        );
+                        alert("Item reordered successfully.");
+                        fetchInventory(); // Refresh
+                      } catch (err) {
+                        console.error("Failed to reorder:", err);
+                        alert("Reorder failed.");
+                      }
+                    }}
+                    className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600"
+                  >
+                    Reorder
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
