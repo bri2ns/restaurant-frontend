@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
+import TimeOffRequests from "./TimeOffRequests"; // ✅ relative path
 
 export default function StaffManagement() {
   const [schedules, setSchedules] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
+  const [timeOffRequests, setTimeOffRequests] = useState([]);
   const [newEntry, setNewEntry] = useState({
     user_id: "",
     shift_start: "",
@@ -19,6 +21,7 @@ export default function StaffManagement() {
   useEffect(() => {
     fetchSchedules();
     fetchStaffMembers();
+    fetchTimeOffRequests();
   }, []);
 
   const fetchSchedules = async () => {
@@ -36,6 +39,15 @@ export default function StaffManagement() {
       setStaffMembers(res.data);
     } catch (err) {
       console.error("Failed to fetch staff members:", err);
+    }
+  };
+
+  const fetchTimeOffRequests = async () => {
+    try {
+      const res = await api.get("/staff/time-off");
+      setTimeOffRequests(res.data);
+    } catch (err) {
+      console.error("Failed to fetch time-off requests:", err);
     }
   };
 
@@ -146,7 +158,7 @@ export default function StaffManagement() {
         </button>
       </form>
 
-      <table className="w-full border border-gray-300">
+      <table className="w-full border border-gray-300 mb-10">
         <thead className="bg-gray-100 text-left">
           <tr>
             <th className="p-2">Name</th>
@@ -228,6 +240,9 @@ export default function StaffManagement() {
           ))}
         </tbody>
       </table>
+
+      {/* ✅ Use the new component here */}
+      <TimeOffRequests timeOffRequests={timeOffRequests} />
     </div>
   );
 }
