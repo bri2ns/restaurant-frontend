@@ -123,29 +123,25 @@ export default function InventoryPage() {
                   />
                   <button
                     onClick={async () => {
-                      const qty = parseInt(reorderQuantities[item.id] || 0);
-                      if (!qty || qty < 1) {
-                        alert("Enter a valid reorder quantity.");
-                        return;
-                      }
+  const qty = parseInt(reorderQuantities[item.id] || 0);
+  if (!qty || qty < 1) {
+    alert("Enter a valid reorder quantity.");
+    return;
+  }
 
-                      try {
-                        await api.patch(
-                          `/inventory/${item.id}/reorder`,
-                          qty,
-                          {
-                            headers: {
-                              "Content-Type": "application/json",
-                            },
-                          }
-                        );
-                        alert("Item reordered successfully.");
-                        fetchInventory(); // Refresh
-                      } catch (err) {
-                        console.error("Failed to reorder:", err);
-                        alert("Reorder failed.");
-                      }
-                    }}
+  try {
+    await api.patch(
+      `/inventory/${item.id}/reorder`,
+      { new_quantity: qty }
+    );
+    alert("Item reordered successfully.");
+    fetchInventory(); // Refresh
+  } catch (err) {
+    console.error("Failed to reorder:", err);
+    alert("Reorder failed.");
+  }
+}}
+
                     className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600"
                   >
                     Reorder

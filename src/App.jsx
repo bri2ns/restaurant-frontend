@@ -7,7 +7,7 @@ import MySchedule from "./pages/shared/MySchedule";
 import RequestShiftChange from "./pages/shared/RequestShiftChange";
 import Login from "./pages/shared/Login";
 
-// Manager staff only pages
+// Manager-only pages
 import Reservations from "./pages/manager/Reservations";
 import Orders from "./pages/manager/Orders";
 import Inventory from "./pages/manager/InventoryPage";
@@ -19,21 +19,20 @@ import CreateStaff from "./pages/manager/CreateStaff";
 import InventoryReport from "./pages/manager/InventoryReport";
 import ManagerLayout from "./components/ManagerLayout";
 
-// ✅ Waitstaff-only pages
+// Waitstaff-only pages
 import WaitstaffLayout from "./pages/waitstaff/WaitstaffLayout";
 import CreateOrder from "./pages/waitstaff/CreateOrder";
 import MyOrders from "./pages/waitstaff/MyOrders";
 import WaitstaffReservations from "./pages/waitstaff/WaitstaffReservations";
 
-// Kitchen staff only pages
-import KitchenLayout from './pages/kitchen/KitchenLayout';
-import KitchenDashboard from './pages/kitchen/KitchenDashboard';
-import KitchenHistory from './pages/kitchen/KitchenHistory';
+// Kitchen staff-only pages
+import KitchenLayout from "./pages/kitchen/KitchenLayout";
+import KitchenDashboard from "./pages/kitchen/KitchenDashboard";
+import KitchenHistory from "./pages/kitchen/KitchenHistory";
 
-// Inventory staff only pages
+// Inventory staff-only pages
 import InventoryLayout from "./pages/inventory/InventoryLayout";
 import InventoryDashboard from "./pages/inventory/InventoryDashboard";
-
 
 function AppWrapper() {
   const location = useLocation();
@@ -46,9 +45,15 @@ function AppWrapper() {
         {/* Login route */}
         <Route path="/login" element={<Login />} />
 
-        {/* General staff-shared routes (accessible by multiple roles) */}
-        <Route path="/shared/my-schedule" element={<ProtectedRoute><MySchedule /></ProtectedRoute>} />
-        <Route path="/shared/request-shift-change" element={<ProtectedRoute><RequestShiftChange /></ProtectedRoute>} />
+        {/* General staff-shared routes */}
+        <Route
+          path="/shared/my-schedule"
+          element={<ProtectedRoute><MySchedule /></ProtectedRoute>}
+        />
+        <Route
+          path="/shared/request-shift-change"
+          element={<ProtectedRoute><RequestShiftChange /></ProtectedRoute>}
+        />
 
         {/* Manager-only routes */}
         <Route path="/" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
@@ -70,15 +75,15 @@ function AppWrapper() {
           <Route path="reservations" element={<WaitstaffReservations />} />
         </Route>
 
-        {/* Kitchen staff only routes */}
+        {/* Kitchen staff-only routes */}
         <Route path="/kitchen" element={<ProtectedRoute role="kitchen"><KitchenLayout /></ProtectedRoute>}>
-        <Route index element={<KitchenDashboard />} />
-        <Route path="history" element={<KitchenHistory />} />
+          <Route index element={<KitchenDashboard />} />
+          <Route path="history" element={<KitchenHistory />} />
         </Route>
 
-        {/* Inventory staff only routes */}
-        <Route path="/inventory" element={<ProtectedRoute role="inventory"><InventoryLayout /></ProtectedRoute>}>
-        <Route index element={<InventoryDashboard />} />
+        {/* Inventory staff-only routes (renamed path) */}
+        <Route path="/inventory-staff" element={<ProtectedRoute role="inventory"><InventoryLayout /></ProtectedRoute>}>
+          <Route index element={<InventoryDashboard />} />
         </Route>
       </Routes>
     </>

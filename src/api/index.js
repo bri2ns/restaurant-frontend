@@ -13,18 +13,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle unauthorized responses
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
-
 export async function getActiveOrders() {
   const res = await api.get("/orders/active");
   return res.data;
@@ -36,5 +24,18 @@ export async function updateOrderStatus(orderId, newStatus) {
   });
   return res.data;
 }
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.log("🔐 AXIOS ERROR", error.response?.status, error.response?.data);
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 
 export default api;

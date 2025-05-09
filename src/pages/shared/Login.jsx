@@ -38,7 +38,7 @@ export default function Login() {
           navigate("/kitchen");
           break;
         case "inventory":
-          navigate("/inventory-dashboard");
+          navigate("/inventory");
           break;
         default:
           navigate("/unauthorized");
