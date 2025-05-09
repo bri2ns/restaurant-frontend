@@ -1,23 +1,24 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Reservations from "./pages/Reservations";
-import Orders from "./pages/Orders";
-import Inventory from "./pages/InventoryPage";
-import Staff from "./pages/Staff";
-import Login from "./pages/Login";
-import ManagerDashboard from "./pages/ManagerDashboard";
-import StaffManagement from "./pages/StaffManagement";
-import MenuItems from "./pages/MenuItems";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import Reservations from "./pages/manager/Reservations";
+import Orders from "./pages/manager/Orders";
+import Inventory from "./pages/manager/InventoryPage";
+import Staff from "./pages/manager/Staff";
+import Login from "./pages/shared/Login";
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import StaffManagement from "./pages/manager/StaffManagement";
+import MenuItems from "./pages/manager/MenuItems";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ManagerLayout from "./components/ManagerLayout";
 import Navbar from "./components/Navbar";
-import CreateStaff from "./pages/CreateStaff";
-import InventoryReport from "./pages/InventoryReport";
+import CreateStaff from "./pages/manager/CreateStaff";
+import InventoryReport from "./pages/manager/InventoryReport";
 
-function App() {
-  const showNavbar = !window.location.pathname.startsWith("/login");
+function AppWrapper() {
+  const location = useLocation();
+  const showNavbar = !location.pathname.startsWith("/login");
 
   return (
-    <Router>
+    <>
       {showNavbar && <Navbar />}
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -34,12 +35,17 @@ function App() {
           <Route path="inventory" element={<Inventory />} />
           <Route path="reservations" element={<Reservations />} />
           <Route path="menu" element={<MenuItems />} />
-          <Route path="/manager/inventory-report" element={<InventoryReport />} />
-          
+          <Route path="manager/inventory-report" element={<InventoryReport />} />
         </Route>
       </Routes>
-    </Router>
+    </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppWrapper />
+    </Router>
+  );
+}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import api from "../api";
+import api from "../../api";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -13,59 +13,51 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    console.log("🔐 Attempting login with:");
-    console.log("Username:", username);
-    console.log("Password:", password);
-
     try {
       const formData = new URLSearchParams();
       formData.append("username", username);
       formData.append("password", password);
 
-      console.log("Sending request to /auth/login...");
-      console.log("Payload being sent:", formData.toString());
       const response = await api.post("/auth/login", formData, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
-
-      console.log("✅ Login successful:", response.data);
 
       const token = response.data.access_token || response.data;
       localStorage.setItem("token", token);
-      console.log("📦 Token saved to localStorage:", token);
-
       const decoded = jwtDecode(token);
-      console.log("🧬 Decoded token:", decoded);
 
-      // Redirect based on role
+      // Role-based redirection
       switch (decoded.role) {
         case "manager":
           navigate("/manager");
           break;
-        // Add other roles here if needed
+        case "waitstaff":
+          navigate("/waitstaff");
+          break;
+        case "kitchen":
+          navigate("/kitchen");
+          break;
+        case "inventory":
+          navigate("/inventory-dashboard");
+          break;
         default:
-          navigate("/");
+          navigate("/unauthorized");
       }
     } catch (err) {
-      console.error("[FAIL] Login failed:", err.response?.data || err.message);
-      setError("Invalid credentials");
+      console.error("[FAIL] Login error:", err.response?.data || err.message);
+      setError("Invalid credentials. Please try again.");
     }
   };
 
   return (
     <div className="max-w-sm mx-auto mt-10 p-6 border rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Manager Login</h2>
+      <h2 className="text-xl font-semibold mb-4">Login</h2>
       <form onSubmit={handleLogin} className="space-y-4">
         <input
           type="text"
           placeholder="Username"
           value={username}
-          onChange={(e) => {
-            setUsername(e.target.value);
-            console.log("Username changed:", e.target.value);
-          }}
+          onChange={(e) => setUsername(e.target.value)}
           className="w-full p-2 border rounded"
           required
         />
@@ -73,10 +65,7 @@ export default function Login() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            console.log("🔑 Password changed (hidden): [HIDDEN]");
-          }}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 border rounded"
           required
         />

@@ -1,6 +1,6 @@
 // MenuItems.jsx
 import React, { useEffect, useState } from "react";
-import api from "../api";
+import api from "../../api";
 
 export default function MenuItems() {
   const [items, setItems] = useState([]);

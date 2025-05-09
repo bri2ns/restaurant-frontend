@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import api from "../api";
-import StaffScheduleSection from "../components/StaffScheduleSection";
-import MenuItemList from "../components/MenuItemList";
+import api from "../../api";
+import StaffScheduleSection from "../../components/StaffScheduleSection";
+import MenuItemList from "../../components/MenuItemList";
 
 
 export default function ManagerDashboard() {
