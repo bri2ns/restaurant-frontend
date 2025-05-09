@@ -13,6 +13,12 @@ import Navbar from "./components/Navbar";
 import CreateStaff from "./pages/manager/CreateStaff";
 import InventoryReport from "./pages/manager/InventoryReport";
 
+// ✅ Waitstaff components
+import WaitstaffLayout from "./pages/waitstaff/WaitstaffLayout";
+import CreateOrder from "./pages/waitstaff/CreateOrder";
+import MyOrders from "./pages/waitstaff/MyOrders";
+import MySchedule from "./pages/waitstaff/MySchedule";
+
 function AppWrapper() {
   const location = useLocation();
   const showNavbar = !location.pathname.startsWith("/login");
@@ -27,7 +33,7 @@ function AppWrapper() {
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/staff" element={<ProtectedRoute><Staff /></ProtectedRoute>} />
 
-        {/* Manager section with persistent sidebar */}
+        {/* Manager section */}
         <Route path="/" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
           <Route path="manager" element={<ManagerDashboard />} />
           <Route path="staff-management" element={<StaffManagement />} />
@@ -36,6 +42,13 @@ function AppWrapper() {
           <Route path="reservations" element={<Reservations />} />
           <Route path="menu" element={<MenuItems />} />
           <Route path="manager/inventory-report" element={<InventoryReport />} />
+        </Route>
+
+        {/* ✅ Waitstaff section */}
+        <Route path="/waitstaff" element={<ProtectedRoute role="waitstaff"><WaitstaffLayout /></ProtectedRoute>}>
+          <Route path="orders" element={<CreateOrder />} />
+          <Route path="my-orders" element={<MyOrders />} />
+          <Route path="schedule" element={<MySchedule />} />
         </Route>
       </Routes>
     </>
