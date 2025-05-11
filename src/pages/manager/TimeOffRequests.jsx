@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import api from "../../api";
+import { RefreshContext } from "../../context/RefreshContext";
 
 export default function TimeOffRequests() {
   const [requests, setRequests] = useState([]);
-
-  useEffect(() => {
-    fetchRequests();
-  }, []);
+  const refresh = useContext(RefreshContext); // hooks into refresh count
 
   const fetchRequests = async () => {
     try {
@@ -17,10 +15,14 @@ export default function TimeOffRequests() {
     }
   };
 
+  useEffect(() => {
+    fetchRequests();
+  }, [refresh]); // ✅ re-run on each global tick
+
   const handleUpdateStatus = async (id, status) => {
     try {
       await api.patch(`/staff/time-off/${id}?status=${status}`);
-      await fetchRequests(); // Refresh list
+      await fetchRequests(); // still fetch manually on status update
     } catch (err) {
       console.error(`Failed to update request #${id}:`, err);
     }

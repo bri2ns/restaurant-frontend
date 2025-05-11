@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import api from "../../api";
+import { RefreshContext } from "../../context/RefreshContext";
 
 export default function InventoryPage() {
   const [inventory, setInventory] = useState([]);
@@ -8,10 +9,7 @@ export default function InventoryPage() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [reorderQuantities, setReorderQuantities] = useState({});
-
-  useEffect(() => {
-    fetchInventory();
-  }, []);
+  const refresh = useContext(RefreshContext);
 
   const fetchInventory = async () => {
     try {
@@ -31,6 +29,10 @@ export default function InventoryPage() {
       console.error("Failed to fetch inventory:", err);
     }
   };
+  
+    useEffect(() => {
+    fetchInventory();
+  }, [refresh]);
 
   useEffect(() => {
     let filtered = [...inventory];
