@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../../api";
-import StaffScheduleSection from "../../components/StaffScheduleSection";
+import ReadOnlyScheduleTable from "../../components/ReadOnlyScheduleTable";
 import MenuItemList from "../../components/MenuItemList";
 
 
@@ -67,7 +67,7 @@ export default function ManagerDashboard() {
         {/* Staff Schedule */}
         <section className="border p-6 rounded shadow bg-white">
           <h2 className="text-xl font-semibold mb-4">Staff Schedule</h2>
-          <StaffScheduleSection />
+          <ReadOnlyScheduleTable />
         </section>
 
         {/* Menu Items */}
