@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
-// ✅ Shared staff pages
+// Shared staff pages
 import MySchedule from "./pages/shared/MySchedule";
 import RequestShiftChange from "./pages/shared/RequestShiftChange";
 import Login from "./pages/shared/Login";
@@ -40,19 +40,21 @@ import MakeReservation from "./pages/customer/MakeReservation";
 import MyReservations from "./pages/shared/MyReservations";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 
+// Public pages
 import LandingPage from "./pages/shared/LandingPage";
 import Register from "./pages/customer/Register";
 
-
 function AppWrapper() {
   const location = useLocation();
-  const showNavbar = !location.pathname.startsWith("/login");
+  const showNavbar = !["/login", "/register", "/"].includes(location.pathname);
 
   return (
     <>
       {showNavbar && <Navbar />}
       <Routes>
-        {/* Login route */}
+        {/* Public pages */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
         {/* General staff-shared routes */}
@@ -65,18 +67,18 @@ function AppWrapper() {
           element={<ProtectedRoute><RequestShiftChange /></ProtectedRoute>}
         />
 
-        {/* Manager-only routes */}
-        <Route path="/" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
-          <Route path="manager" element={<ManagerDashboard />} />
+        {/* Manager routes */}
+        <Route path="/manager" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
+          <Route index element={<ManagerDashboard />} />
           <Route path="staff-management" element={<StaffManagement />} />
           <Route path="create-staff" element={<CreateStaff />} />
           <Route path="inventory" element={<Inventory />} />
           <Route path="reservations" element={<Reservations />} />
           <Route path="menu" element={<MenuItems />} />
-          <Route path="manager/inventory-report" element={<InventoryReport />} />
+          <Route path="inventory-report" element={<InventoryReport />} />
         </Route>
 
-        {/* Waitstaff-only routes */}
+        {/* Waitstaff routes */}
         <Route path="/waitstaff" element={<ProtectedRoute role="waitstaff"><WaitstaffLayout /></ProtectedRoute>}>
           <Route path="orders" element={<CreateOrder />} />
           <Route path="my-orders" element={<MyOrders />} />
@@ -85,35 +87,30 @@ function AppWrapper() {
           <Route path="reservations" element={<WaitstaffReservations />} />
         </Route>
 
-        {/* Kitchen staff-only routes */}
+        {/* Kitchen routes */}
         <Route path="/kitchen" element={<ProtectedRoute role="kitchen"><KitchenLayout /></ProtectedRoute>}>
           <Route index element={<KitchenDashboard />} />
           <Route path="history" element={<KitchenHistory />} />
         </Route>
 
-        {/* Inventory staff-only routes (renamed path) */}
+        {/* Inventory staff routes */}
         <Route path="/inventory-staff" element={<ProtectedRoute role="inventory"><InventoryLayout /></ProtectedRoute>}>
           <Route index element={<InventoryDashboard />} />
         </Route>
 
-        {/* Private customer routes */}
+        {/* Customer routes */}
         <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout /></ProtectedRoute>}>
-        <Route path="reserve" element={<MakeReservation />} />
-        <Route path="my-reservations" element={<MyReservations />} />
-        <Route path="dashboard" element={<CustomerDashboard />} />
-      </Route>
-
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/register" element={<Register />} />
-        
-
+          <Route path="reserve" element={<MakeReservation />} />
+          <Route path="my-reservations" element={<MyReservations />} />
+          <Route path="dashboard" element={<CustomerDashboard />} />
+        </Route>
       </Routes>
     </>
   );
 }
 
 export default function App() {
-  return ( 
+  return (
     <Router>
       <AppWrapper />
     </Router>
