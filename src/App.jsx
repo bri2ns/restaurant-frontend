@@ -41,8 +41,8 @@ import MyReservations from "./pages/shared/MyReservations";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 
 // Public pages
-import Register from "./pages/customer/Register";
 import Home from "./pages/public/Home";
+import Register from "./pages/public/Register";
 
 function AppWrapper() {
   const location = useLocation();
@@ -57,7 +57,7 @@ function AppWrapper() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* General staff-shared routes */}
+        {/* Shared staff routes */}
         <Route
           path="/shared/my-schedule"
           element={<ProtectedRoute><MySchedule /></ProtectedRoute>}
@@ -67,7 +67,7 @@ function AppWrapper() {
           element={<ProtectedRoute><RequestShiftChange /></ProtectedRoute>}
         />
 
-        {/* Manager routes */}
+        {/* Manager-only routes */}
         <Route path="/manager" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
           <Route index element={<ManagerDashboard />} />
           <Route path="staff-management" element={<StaffManagement />} />
@@ -87,7 +87,7 @@ function AppWrapper() {
           <Route path="reservations" element={<WaitstaffReservations />} />
         </Route>
 
-        {/* Kitchen routes */}
+        {/* Kitchen staff routes */}
         <Route path="/kitchen" element={<ProtectedRoute role="kitchen"><KitchenLayout /></ProtectedRoute>}>
           <Route index element={<KitchenDashboard />} />
           <Route path="history" element={<KitchenHistory />} />
