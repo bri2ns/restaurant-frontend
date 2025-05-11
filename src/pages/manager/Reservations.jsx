@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import api from "../../api";
+import { RefreshContext } from "../../context/RefreshContext";
 
 export default function Reservations() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const refresh = useContext(RefreshContext);
 
   const fetchReservations = async () => {
     try {
@@ -18,7 +20,7 @@ export default function Reservations() {
 
   useEffect(() => {
     fetchReservations();
-  }, []);
+  }, [refresh]);
 
   const handleStatusChange = async (id, newStatus) => {
     try {

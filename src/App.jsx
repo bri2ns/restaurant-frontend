@@ -34,6 +34,16 @@ import KitchenHistory from "./pages/kitchen/KitchenHistory";
 import InventoryLayout from "./pages/inventory/InventoryLayout";
 import InventoryDashboard from "./pages/inventory/InventoryDashboard";
 
+// Customer pages
+import CustomerLayout from "./pages/customer/CustomerLayout";
+import MakeReservation from "./pages/customer/MakeReservation";
+import MyReservations from "./pages/shared/MyReservations";
+import CustomerDashboard from "./pages/customer/CustomerDashboard";
+
+import LandingPage from "./pages/shared/LandingPage";
+import Register from "./pages/customer/Register";
+
+
 function AppWrapper() {
   const location = useLocation();
   const showNavbar = !location.pathname.startsWith("/login");
@@ -85,13 +95,25 @@ function AppWrapper() {
         <Route path="/inventory-staff" element={<ProtectedRoute role="inventory"><InventoryLayout /></ProtectedRoute>}>
           <Route index element={<InventoryDashboard />} />
         </Route>
+
+        {/* Private customer routes */}
+        <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout /></ProtectedRoute>}>
+        <Route path="reserve" element={<MakeReservation />} />
+        <Route path="my-reservations" element={<MyReservations />} />
+        <Route path="dashboard" element={<CustomerDashboard />} />
+      </Route>
+
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<Register />} />
+        
+
       </Routes>
     </>
   );
 }
 
 export default function App() {
-  return (
+  return ( 
     <Router>
       <AppWrapper />
     </Router>

@@ -40,6 +40,9 @@ export default function Login() {
         case "inventory":
           navigate("/inventory");
           break;
+        case "customer":
+          navigate("/customer/dashboard");
+          break;
         default:
           navigate("/unauthorized");
       }
@@ -50,7 +53,7 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 border rounded shadow">
+    <div className="max-w-sm mx-auto mt-10 p-6 border rounded shadow bg-white">
       <h2 className="text-xl font-semibold mb-4">Login</h2>
       <form onSubmit={handleLogin} className="space-y-4">
         <input
