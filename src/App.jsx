@@ -41,19 +41,19 @@ import MyReservations from "./pages/shared/MyReservations";
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 
 // Public pages
-import LandingPage from "./pages/shared/LandingPage";
 import Register from "./pages/customer/Register";
+import Home from "./pages/public/Home";
 
 function AppWrapper() {
   const location = useLocation();
-  const showNavbar = !["/login", "/register", "/"].includes(location.pathname);
+  const showNavbar = !["/", "/login", "/register"].includes(location.pathname);
 
   return (
     <>
       {showNavbar && <Navbar />}
       <Routes>
         {/* Public pages */}
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
