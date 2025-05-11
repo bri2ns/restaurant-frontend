@@ -1,90 +1,108 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../api";
+import { useNavigate } from "react-router-dom";
 
 export default function MakeReservation() {
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [tables, setTables] = useState([]);
-  const [form, setForm] = useState({
-    date: "",
-    time: "",
-    table_id: "",
-  });
+  const [selectedTable, setSelectedTable] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTables = async () => {
-      try {
-        const res = await api.get("/tables");
-        const available = res.data.filter(t => t.is_available);
-        setTables(available);
-      } catch (err) {
-        console.error("❌ Failed to fetch tables", err);
-        setError("Failed to load tables.");
-      }
-    };
+    if (date && time) {
+      fetchAvailableTables();
+    }
+  }, [date, time]);
 
-    fetchTables();
-  }, []);
+  const fetchAvailableTables = async () => {
+    try {
+      const dateTime = new Date(`${date}T${time}`);
+      const token = localStorage.getItem("token");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+      const res = await api.post(
+        "/reservations/availability",
+        {
+          date_time: dateTime.toISOString(),
+          guests_number: 1, // arbitrary low number to get all available
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setTables(res.data.available_tables);
+    } catch (err) {
+      console.error("Failed to fetch tables:", err);
+      setError("⚠️ Could not fetch available tables.");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
-
-    const datetime = `${form.date}T${form.time}`;
-    const payload = {
-      table_id: form.table_id,
-      date_time: datetime,
-    };
+    setLoading(true);
 
     try {
-      await api.post("/reservations", payload);
-      setSuccess("✅ Reservation successful!");
-      setForm({ date: "", time: "", table_id: "" });
+      const dateTime = new Date(`${date}T${time}`);
+      const token = localStorage.getItem("token");
+
+      await api.post(
+        "/reservations",
+        {
+          table_number: Number(selectedTable),
+          date_time: dateTime.toISOString(),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      navigate("/customer/my-reservations");
     } catch (err) {
-      console.error("❌ Reservation failed", err);
-      setError("Unable to complete reservation.");
+      console.error("Reservation failed", err);
+      setError("❌ Unable to complete reservation.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow mt-6">
-      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Make a Reservation</h2>
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow mt-8">
+      <h2 className="text-xl font-bold mb-4 text-center text-blue-700">
+        Make a Reservation
+      </h2>
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-2">
-          <input
-            type="date"
-            name="date"
-            value={form.date}
-            onChange={handleChange}
-            className="w-1/2 border p-2 rounded"
-            required
-          />
-          <input
-            type="time"
-            name="time"
-            value={form.time}
-            onChange={handleChange}
-            className="w-1/2 border p-2 rounded"
-            required
-          />
-        </div>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        />
+
+        <input
+          type="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        />
 
         <select
-          name="table_id"
-          value={form.table_id}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
+          value={selectedTable}
+          onChange={(e) => setSelectedTable(e.target.value)}
           required
+          className="w-full p-2 border rounded"
         >
           <option value="">Select a Table</option>
-          {tables.map((table) => (
-            <option key={table.id} value={table.id}>
-              Table {table.table_number} — Seats {table.capacity}
+          {tables.map((t) => (
+            <option key={t.table_number} value={t.table_number}>
+              Table {t.table_number} — Seats {t.capacity}
             </option>
           ))}
         </select>
@@ -92,13 +110,13 @@ export default function MakeReservation() {
         <button
           type="submit"
           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+          disabled={loading}
         >
-          Book Reservation
+          {loading ? "Booking..." : "Book Reservation"}
         </button>
-
-        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-        {success && <p className="text-green-600 text-sm mt-2">{success}</p>}
       </form>
+
+      {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
     </div>
   );
 }
