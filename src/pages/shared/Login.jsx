@@ -26,7 +26,6 @@ export default function Login() {
       localStorage.setItem("token", token);
       const decoded = jwtDecode(token);
 
-      // Role-based redirection
       switch (decoded.role) {
         case "manager":
           navigate("/manager");
@@ -48,38 +47,62 @@ export default function Login() {
       }
     } catch (err) {
       console.error("[FAIL] Login error:", err.response?.data || err.message);
-      setError("Invalid credentials. Please try again.");
+      setError("❌ Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 border rounded shadow bg-white">
-      <h2 className="text-xl font-semibold mb-4">Login</h2>
-      <form onSubmit={handleLogin} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Login
-        </button>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-      </form>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-4">
+      <div className="bg-white text-black max-w-md w-full p-8 rounded-xl shadow-2xl">
+        <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+          >
+            Login
+          </button>
+        </form>
+
+        {error && (
+          <p className="text-red-600 text-sm text-center mt-4">{error}</p>
+        )}
+
+        <div className="mt-6 text-center space-y-2">
+          <p>
+            Don’t have an account?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-blue-600 hover:underline"
+            >
+              Register
+            </button>
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="text-sm text-gray-500 hover:text-gray-300"
+          >
+            ⬅ Back to Home
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

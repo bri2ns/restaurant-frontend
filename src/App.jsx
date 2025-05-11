@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
@@ -60,15 +65,30 @@ function AppWrapper() {
         {/* Shared staff routes */}
         <Route
           path="/shared/my-schedule"
-          element={<ProtectedRoute><MySchedule /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <MySchedule />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/shared/request-shift-change"
-          element={<ProtectedRoute><RequestShiftChange /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <RequestShiftChange />
+            </ProtectedRoute>
+          }
         />
 
         {/* Manager-only routes */}
-        <Route path="/manager" element={<ProtectedRoute role="manager"><ManagerLayout /></ProtectedRoute>}>
+        <Route
+          path="/manager"
+          element={
+            <ProtectedRoute role="manager">
+              <ManagerLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<ManagerDashboard />} />
           <Route path="staff-management" element={<StaffManagement />} />
           <Route path="create-staff" element={<CreateStaff />} />
@@ -78,8 +98,15 @@ function AppWrapper() {
           <Route path="inventory-report" element={<InventoryReport />} />
         </Route>
 
-        {/* Waitstaff routes */}
-        <Route path="/waitstaff" element={<ProtectedRoute role="waitstaff"><WaitstaffLayout /></ProtectedRoute>}>
+        {/* Waitstaff-only routes */}
+        <Route
+          path="/waitstaff"
+          element={
+            <ProtectedRoute role="waitstaff">
+              <WaitstaffLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="orders" element={<CreateOrder />} />
           <Route path="my-orders" element={<MyOrders />} />
           <Route path="schedule" element={<MySchedule />} />
@@ -87,19 +114,40 @@ function AppWrapper() {
           <Route path="reservations" element={<WaitstaffReservations />} />
         </Route>
 
-        {/* Kitchen staff routes */}
-        <Route path="/kitchen" element={<ProtectedRoute role="kitchen"><KitchenLayout /></ProtectedRoute>}>
+        {/* Kitchen routes */}
+        <Route
+          path="/kitchen"
+          element={
+            <ProtectedRoute role="kitchen">
+              <KitchenLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<KitchenDashboard />} />
           <Route path="history" element={<KitchenHistory />} />
         </Route>
 
         {/* Inventory staff routes */}
-        <Route path="/inventory-staff" element={<ProtectedRoute role="inventory"><InventoryLayout /></ProtectedRoute>}>
+        <Route
+          path="/inventory-staff"
+          element={
+            <ProtectedRoute role="inventory">
+              <InventoryLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<InventoryDashboard />} />
         </Route>
 
         {/* Customer routes */}
-        <Route path="/customer" element={<ProtectedRoute role="customer"><CustomerLayout /></ProtectedRoute>}>
+        <Route
+          path="/customer"
+          element={
+            <ProtectedRoute role="customer">
+              <CustomerLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="reserve" element={<MakeReservation />} />
           <Route path="my-reservations" element={<MyReservations />} />
           <Route path="dashboard" element={<CustomerDashboard />} />

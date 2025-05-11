@@ -44,6 +44,12 @@ export default function Sidebar() {
     { label: "Inventory Dashboard", path: "/inventory" },
   ];
 
+  const customerItems = [
+    { label: "Dashboard", path: "/customer/dashboard" },
+    { label: "Make Reservation", path: "/customer/reserve" },
+    { label: "My Reservations", path: "/customer/my-reservations" },
+  ];
+
   const navItems =
     role === "manager"
       ? managerItems
@@ -53,11 +59,13 @@ export default function Sidebar() {
       ? kitchenItems
       : role === "inventory"
       ? inventoryItems
+      : role === "customer"
+      ? customerItems
       : [];
 
   return (
     <aside className="w-64 bg-white border-r p-4 flex flex-col">
-      <div className="text-center text-lg font-bold border p-2 mb-6">LOGO</div>
+      <div className="text-center text-lg font-bold border p-2 mb-6">Restaurant</div>
       <nav className="space-y-2">
         {navItems.map((item) => (
           <button

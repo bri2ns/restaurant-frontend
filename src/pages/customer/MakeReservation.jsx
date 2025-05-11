@@ -1,80 +1,104 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../../api";
-import { RefreshContext } from "../../context/RefreshContext";
 
 export default function MakeReservation() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [guests, setGuests] = useState(1);
-  const [availableTables, setAvailableTables] = useState([]);
-  const [table, setTable] = useState("");
-  const [message, setMessage] = useState("");
-  const refresh = useContext(RefreshContext);
+  const [tables, setTables] = useState([]);
+  const [form, setForm] = useState({
+    date: "",
+    time: "",
+    table_id: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    if (date && time && guests) {
-      fetchAvailability();
-    }
-  }, [date, time, guests, refresh]);
+    const fetchTables = async () => {
+      try {
+        const res = await api.get("/tables");
+        const available = res.data.filter(t => t.is_available);
+        setTables(available);
+      } catch (err) {
+        console.error("❌ Failed to fetch tables", err);
+        setError("Failed to load tables.");
+      }
+    };
 
-  const fetchAvailability = async () => {
-    try {
-      const res = await api.get("/reservations/available", {
-        params: { date_time: `${date}T${time}`, guests_number: guests },
-      });
-      setAvailableTables(res.data);
-    } catch (err) {
-      console.error("Failed to fetch available tables:", err);
-    }
+    fetchTables();
+  }, []);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const datetime = `${form.date}T${form.time}`;
+    const payload = {
+      table_id: form.table_id,
+      date_time: datetime,
+    };
+
     try {
-      await api.post("/reservations", {
-        customer_name: name,
-        email,
-        phone,
-        table_number: parseInt(table),
-        date_time: `${date}T${time}`,
-        guests_number: parseInt(guests),
-      });
-      setMessage("✅ Reservation successfully made!");
+      await api.post("/reservations", payload);
+      setSuccess("✅ Reservation successful!");
+      setForm({ date: "", time: "", table_id: "" });
     } catch (err) {
-      console.error("Failed to make reservation:", err);
-      setMessage("❌ Failed to make reservation. Please try again.");
+      console.error("❌ Reservation failed", err);
+      setError("Unable to complete reservation.");
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded mt-8">
-      <h2 className="text-2xl font-bold mb-4">Make a Reservation</h2>
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow mt-6">
+      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Make a Reservation</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="text" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full p-2 border rounded" />
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full p-2 border rounded" />
-        <input type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} required className="w-full p-2 border rounded" />
-
-        <div className="flex gap-4">
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="p-2 border rounded w-1/2" />
-          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required className="p-2 border rounded w-1/2" />
+        <div className="flex gap-2">
+          <input
+            type="date"
+            name="date"
+            value={form.date}
+            onChange={handleChange}
+            className="w-1/2 border p-2 rounded"
+            required
+          />
+          <input
+            type="time"
+            name="time"
+            value={form.time}
+            onChange={handleChange}
+            className="w-1/2 border p-2 rounded"
+            required
+          />
         </div>
 
-        <input type="number" min="1" placeholder="Number of Guests" value={guests} onChange={(e) => setGuests(e.target.value)} required className="w-full p-2 border rounded" />
-
-        <select value={table} onChange={(e) => setTable(e.target.value)} required className="w-full p-2 border rounded">
+        <select
+          name="table_id"
+          value={form.table_id}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        >
           <option value="">Select a Table</option>
-          {availableTables.map((t) => (
-            <option key={t} value={t}>Table {t}</option>
+          {tables.map((table) => (
+            <option key={table.id} value={table.id}>
+              Table {table.table_number} — Seats {table.capacity}
+            </option>
           ))}
         </select>
 
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Book Table</button>
-      </form>
+        <button
+          type="submit"
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+        >
+          Book Reservation
+        </button>
 
-      {message && <p className="mt-4 text-center">{message}</p>}
+        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+        {success && <p className="text-green-600 text-sm mt-2">{success}</p>}
+      </form>
     </div>
   );
 }

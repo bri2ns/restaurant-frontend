@@ -24,7 +24,7 @@ export default function Register() {
     try {
       await api.post("/auth/register", {
         ...form,
-        role: "customer", // 🔒 Prevents staff-level registration
+        role: "customer", // 🔒 Customer-only role
       });
       setSuccess("🎉 Account created successfully! You can now log in.");
       setTimeout(() => navigate("/login"), 2000);
@@ -35,9 +35,11 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md animate-fadeIn">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Create a Customer Account</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-4">
+      <div className="bg-white text-black max-w-md w-full p-8 rounded-xl shadow-2xl">
+        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
+          Create a Customer Account
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -46,7 +48,7 @@ export default function Register() {
             placeholder="Username"
             value={form.username}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -55,7 +57,7 @@ export default function Register() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -64,12 +66,12 @@ export default function Register() {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
           >
             Register
           </button>
@@ -78,10 +80,23 @@ export default function Register() {
         {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
         {success && <p className="text-green-600 mt-4 text-center">{success}</p>}
 
-        <p className="mt-6 text-sm text-center text-gray-600">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">Login here</a>
-        </p>
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              className="text-blue-600 hover:underline"
+            >
+              Login here
+            </button>
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="text-sm text-gray-500 hover:text-gray-300"
+          >
+            ⬅ Back to Home
+          </button>
+        </div>
       </div>
     </div>
   );
