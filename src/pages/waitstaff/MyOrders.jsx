@@ -4,26 +4,48 @@ import api from "../../api";
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
+
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await api.get("/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Failed to fetch orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await api.get("/orders", {
+    fetchOrders();
+  }, []);
+
+  const markAsServed = async (orderId) => {
+    try {
+      setUpdatingId(orderId);
+      const token = localStorage.getItem("token");
+      await api.patch(
+        `/orders/${orderId}/status`,
+        { status: "served" },
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
-        setOrders(res.data);
-      } catch (err) {
-        console.error("Failed to fetch orders:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, []);
+        }
+      );
+      await fetchOrders();
+    } catch (err) {
+      console.error("Failed to update status:", err);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -41,6 +63,7 @@ export default function MyOrders() {
               <th className="p-2 border">Table</th>
               <th className="p-2 border">Items</th>
               <th className="p-2 border">Status</th>
+              <th className="p-2 border">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -49,20 +72,24 @@ export default function MyOrders() {
                 <td className="p-2">{order.id}</td>
                 <td className="p-2">Table {order.table_number}</td>
                 <td className="p-2">
-                  <ul className="list-disc pl-4">
-                    {order.items_ordered.map((item, index) => (
-                      <li key={index}>
-                        {item} x {order.quantities[index]}
-                      </li>
-                    ))}
-                    {order.special_requests && (
-                      <li className="italic text-gray-500">
-                        Note: {order.special_requests}
-                      </li>
-                    )}
-                  </ul>
+                  {order.items_ordered.map((item, idx) => (
+                    <div key={idx}>
+                      {item} (x{order.quantities[idx]})
+                    </div>
+                  ))}
                 </td>
-                <td className="p-2 capitalize text-blue-600">{order.status}</td>
+                <td className="p-2 capitalize">{order.status}</td>
+                <td className="p-2">
+                  {order.status === "ready" && (
+                    <button
+                      onClick={() => markAsServed(order.id)}
+                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      disabled={updatingId === order.id}
+                    >
+                      {updatingId === order.id ? "Updating..." : "Mark as Served"}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

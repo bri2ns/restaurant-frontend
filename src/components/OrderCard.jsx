@@ -3,8 +3,7 @@ import { updateOrderStatus } from "../api";
 export default function OrderCard({ order }) {
   const nextStatus = {
     placed: "cooking",
-    cooking: "ready",
-    ready: "served"
+    cooking: "ready"
   }[order.status];
 
   const statusButtonColor = {

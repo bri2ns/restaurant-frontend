@@ -129,15 +129,16 @@ function AppWrapper() {
 
         {/* Inventory staff routes */}
         <Route
-          path="/inventory-staff"
+          path="/inventory"
           element={
             <ProtectedRoute role="inventory">
               <InventoryLayout />
             </ProtectedRoute>
           }
-        >
-          <Route index element={<InventoryDashboard />} />
-        </Route>
+>
+  <Route index element={<InventoryDashboard />} />
+</Route>
+
 
         {/* Customer routes */}
         <Route
