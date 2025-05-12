@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function MakeReservation() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [customerName, setCustomerName] = useState("");
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +28,7 @@ export default function MakeReservation() {
         "/reservations/availability",
         {
           date_time: dateTime.toISOString(),
-          guests_number: 1, // arbitrary low number to get all available
+          guests_number: 0, // Show all available tables regardless of size
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -50,11 +51,18 @@ export default function MakeReservation() {
       const dateTime = new Date(`${date}T${time}`);
       const token = localStorage.getItem("token");
 
+      const selected = tables.find(
+        (t) => t.table_number === Number(selectedTable)
+      );
+      const guests_number = selected ? selected.capacity : 0;
+
       await api.post(
         "/reservations",
         {
           table_number: Number(selectedTable),
           date_time: dateTime.toISOString(),
+          customer_name: customerName,
+          guests_number,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -77,6 +85,15 @@ export default function MakeReservation() {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="Your name"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          required
+          className="w-full p-2 border rounded"
+        />
+
         <input
           type="date"
           value={date}

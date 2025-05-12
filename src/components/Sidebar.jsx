@@ -22,10 +22,10 @@ export default function Sidebar() {
     { label: "Overview", path: "/manager" },
     { label: "Manage Staff", path: "/staff-management" },
     { label: "Create Staff", path: "/create-staff" },
-    { label: "View Menu Items", path: "/menu" },
-    { label: "Manage Inventory", path: "/inventory" },
+    { label: "View Menu Items", path: "/manager/menu" },
+    { label: "Manage Inventory", path: "/manager/inventory" },
     { label: "Inventory Report", path: "/manager/inventory-report" },
-    { label: "Reservations", path: "/reservations" },
+    { label: "Reservations", path: "/manager/reservations" },
   ];
 
   const waitstaffItems = [
