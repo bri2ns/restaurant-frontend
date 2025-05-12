@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from "../../api";
+import { login } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -18,7 +18,7 @@ export default function Login() {
       formData.append("username", username);
       formData.append("password", password);
 
-      const response = await api.post("/auth/login", formData, {
+      const response = await login(formData, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
 

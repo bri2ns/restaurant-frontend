@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api";
+import { fetchAvailability, createReservation } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 export default function MakeReservation() {
@@ -24,15 +24,12 @@ export default function MakeReservation() {
       const dateTime = new Date(`${date}T${time}`);
       const token = localStorage.getItem("token");
 
-      const res = await api.post(
-        "/reservations/availability",
+      const res = await fetchAvailability(
         {
           date_time: dateTime.toISOString(),
           guests_number: 0, // Show all available tables regardless of size
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        token
       );
 
       setTables(res.data.available_tables);
@@ -56,17 +53,14 @@ export default function MakeReservation() {
       );
       const guests_number = selected ? selected.capacity : 0;
 
-      await api.post(
-        "/reservations",
+      await createReservation(
         {
           table_number: Number(selectedTable),
           date_time: dateTime.toISOString(),
           customer_name: customerName,
           guests_number,
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        token
       );
 
       navigate("/customer/my-reservations");
@@ -87,7 +81,7 @@ export default function MakeReservation() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="Your name"
+          placeholder="Customer Name"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
           required

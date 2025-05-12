@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import api from "../../api";
+import { getMyReservations } from "../../api";
 import { RefreshContext } from "../../context/RefreshContext";
 
 export default function CustomerDashboard() {
@@ -14,12 +14,13 @@ export default function CustomerDashboard() {
   const fetchReservations = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await api.get("/reservations/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await getMyReservations(token);
 
       const future = res.data
-        .filter((r) => r.status === "confirmed" && new Date(r.date_time) > new Date())
+        .filter(
+          (r) =>
+            r.status === "confirmed" && new Date(r.date_time) > new Date()
+        )
         .sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
 
       setNextReservation(future[0] || null);
@@ -27,6 +28,7 @@ export default function CustomerDashboard() {
       console.error("Failed to fetch reservations:", err);
     }
   };
+
 
   return (
     <div className="p-6 max-w-3xl mx-auto">

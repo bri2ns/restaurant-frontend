@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from "../../api";
+import { registerCustomer } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
@@ -16,15 +16,16 @@ export default function Register() {
     setSuccess("");
 
     try {
-      const res = await api.post("/customers/register", {
+      const res = await registerCustomer({
         username,
         email,
         password,
-        role: "customer", // 🔐 Required by backend
+        role: "customer",
       });
 
       setSuccess("🎉 Registration successful! You can now log in.");
       setTimeout(() => navigate("/login"), 1500);
+
     } catch (err) {
       console.error("Registration failed:", err.response?.data || err.message);
       setError(err.response?.data?.detail || "Registration failed. Try again.");
