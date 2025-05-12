@@ -8,7 +8,7 @@ export default function InventoryPage() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [reorderQuantities, setReorderQuantities] = useState({});
+  const [editedReorderLevels, setEditedReorderLevels] = useState({});
   const refresh = useContext(RefreshContext);
 
   const fetchInventory = async () => {
@@ -17,9 +17,7 @@ export default function InventoryPage() {
       const items = res.data;
 
       const categorySet = new Set(
-        items
-          .map((item) => item.category?.trim().toLowerCase())
-          .filter(Boolean)
+        items.map((item) => item.category?.trim().toLowerCase()).filter(Boolean)
       );
 
       setCategories(["all", ...Array.from(categorySet)]);
@@ -29,8 +27,8 @@ export default function InventoryPage() {
       console.error("Failed to fetch inventory:", err);
     }
   };
-  
-    useEffect(() => {
+
+  useEffect(() => {
     fetchInventory();
   }, [refresh]);
 
@@ -53,6 +51,24 @@ export default function InventoryPage() {
   }, [search, selectedCategory, inventory]);
 
   const isLowStock = (item) => item.quantity_on_hand <= item.reorder_level;
+
+  const handleReorderLevelUpdate = async (itemId) => {
+    const newLevel = parseInt(editedReorderLevels[itemId]);
+
+    if (isNaN(newLevel) || newLevel < 0) {
+      alert("Enter a valid reorder level.");
+      return;
+    }
+
+    try {
+      await api.patch(`/inventory/${itemId}`, { reorder_level: newLevel });
+      alert("Reorder level updated.");
+      fetchInventory();
+    } catch (err) {
+      console.error("Failed to update reorder level:", err);
+      alert("Update failed.");
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -90,7 +106,7 @@ export default function InventoryPage() {
             <th className="p-2">Reorder Level</th>
             <th className="p-2">Supplier</th>
             <th className="p-2">Status</th>
-            <th className="p-2">Reorder</th>
+            <th className="p-2">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -99,7 +115,24 @@ export default function InventoryPage() {
               <td className="p-2">{item.item_name}</td>
               <td className="p-2 capitalize">{item.category || "-"}</td>
               <td className="p-2">{item.quantity_on_hand}</td>
-              <td className="p-2">{item.reorder_level}</td>
+              <td className="p-2">
+                <input
+                  type="number"
+                  min="0"
+                  className="w-20 border px-1 py-0.5 rounded text-sm"
+                  value={
+                    editedReorderLevels[item.id] !== undefined
+                      ? editedReorderLevels[item.id]
+                      : item.reorder_level
+                  }
+                  onChange={(e) =>
+                    setEditedReorderLevels({
+                      ...editedReorderLevels,
+                      [item.id]: e.target.value,
+                    })
+                  }
+                />
+              </td>
               <td className="p-2">{item.supplier_info || "-"}</td>
               <td className="p-2">
                 {isLowStock(item) ? (
@@ -109,46 +142,12 @@ export default function InventoryPage() {
                 )}
               </td>
               <td className="p-2">
-                <div className="flex gap-2 items-center flex-wrap">
-                  <input
-                    type="number"
-                    min="1"
-                    placeholder="Qty"
-                    className="w-16 border rounded px-1 py-0.5 text-sm"
-                    value={reorderQuantities[item.id] || ""}
-                    onChange={(e) =>
-                      setReorderQuantities({
-                        ...reorderQuantities,
-                        [item.id]: e.target.value,
-                      })
-                    }
-                  />
-                  <button
-                    onClick={async () => {
-  const qty = parseInt(reorderQuantities[item.id] || 0);
-  if (!qty || qty < 1) {
-    alert("Enter a valid reorder quantity.");
-    return;
-  }
-
-  try {
-    await api.patch(
-      `/inventory/${item.id}/reorder`,
-      { new_quantity: qty }
-    );
-    alert("Item reordered successfully.");
-    fetchInventory(); // Refresh
-  } catch (err) {
-    console.error("Failed to reorder:", err);
-    alert("Reorder failed.");
-  }
-}}
-
-                    className="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600"
-                  >
-                    Reorder
-                  </button>
-                </div>
+                <button
+                  onClick={() => handleReorderLevelUpdate(item.id)}
+                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                >
+                  Update Level
+                </button>
               </td>
             </tr>
           ))}
