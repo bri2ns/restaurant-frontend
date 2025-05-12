@@ -24,7 +24,8 @@ export default function InventoryReport() {
           end_date: endDate,
         },
       });
-      setReportData(res.data);
+
+      setReportData(res.data.report || []);
     } catch (err) {
       console.error("Failed to fetch report:", err);
       setError("Failed to load usage report.");
@@ -69,21 +70,27 @@ export default function InventoryReport() {
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {loading && <p className="text-gray-600">Loading report...</p>}
 
+      {!loading && reportData.length === 0 && (
+        <p className="text-gray-600 mt-4">No report data available for this date range.</p>
+      )}
+
       {reportData.length > 0 && (
         <table className="w-full mt-6 border border-gray-300 bg-white">
           <thead className="bg-gray-100 text-left">
             <tr>
               <th className="p-2">Item</th>
-              <th className="p-2">Category</th>
-              <th className="p-2">Quantity Used</th>
+              <th className="p-2">Qty on Hand</th>
+              <th className="p-2">Reorder Level</th>
+              <th className="p-2">Last Updated</th>
             </tr>
           </thead>
           <tbody>
             {reportData.map((entry) => (
               <tr key={entry.item_id} className="border-t">
                 <td className="p-2">{entry.item_name}</td>
-                <td className="p-2 capitalize">{entry.category || "-"}</td>
-                <td className="p-2">{entry.quantity_used}</td>
+                <td className="p-2">{entry.quantity_on_hand}</td>
+                <td className="p-2">{entry.reorder_level}</td>
+                <td className="p-2">{new Date(entry.last_updated).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
