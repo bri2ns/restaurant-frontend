@@ -7,9 +7,9 @@ export default function KitchenDashboard() {
 
   useEffect(() => {
   getActiveOrders()
-    .then((data) => {
-      console.log("Fetched orders:", data);
-      setOrders(data);
+    .then((res) => {
+      console.log("Fetched orders:", res.data);
+      setOrders(res.data);
     })
     .catch((err) => {
       console.error("Error fetching active orders:", err);
