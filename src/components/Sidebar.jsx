@@ -20,8 +20,8 @@ export default function Sidebar() {
 
   const managerItems = [
     { label: "Overview", path: "/manager" },
-    { label: "Manage Staff", path: "/staff-management" },
-    { label: "Create Staff", path: "/create-staff" },
+    { label: "Manage Staff", path: "/manager/staff-management" },
+    { label: "Create Staff", path: "/manager/create-staff" },
     { label: "View Menu Items", path: "/manager/menu" },
     { label: "Manage Inventory", path: "/manager/inventory" },
     { label: "Inventory Report", path: "/manager/inventory-report" },
